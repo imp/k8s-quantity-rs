@@ -1,0 +1,11 @@
+[package]
+name = "k8s-quantity"
+version = "0.0.0"
+edition = "2021"
+rust-version = "1.61"
+description = "Rust implementation of K8s Quantity type"
+repository = "https://github.com/imp/k8s-metrics-rs"
+license = "Apache-2.0"
+
+[dependencies]
+serde = "1.0"
