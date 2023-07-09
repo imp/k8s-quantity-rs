@@ -1,24 +1,47 @@
 use super::*;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct Int64Amount {
     value: i64,
     scale: Scale,
 }
 
 impl Int64Amount {
-    pub(super) fn with_scale(value: i64, scale: Scale) -> Self {
+    pub(super) fn new(value: i64) -> Self {
+        Self::with_scale(value, Scale::None, Format::DecimalSI)
+    }
+
+    pub(super) fn with_scale(value: i64, scale: Scale, format: Format) -> Self {
+        let value = if let Some(multiplier) = scale.format_multiplier(format) {
+            value * multiplier
+        } else {
+            value
+        };
         Self { value, scale }
     }
 
-    pub fn as_int64(&self, format: Format) -> Option<i64> {
-        self.scale
-            .integer_multiplier(format)?
-            .checked_mul(self.value)
+    pub(super) fn raw_value(&self) -> i64 {
+        self.value
     }
 
-    pub fn as_scaled(&self, _scale: Scale) -> Option<i64> {
-        None
+    pub fn as_int64(&self) -> Option<i64> {
+        self.scale.integer_multiplier()?.checked_mul(self.value)
+    }
+
+    pub fn as_scale(&self, _scale: Scale) -> Self {
+        todo!()
+    }
+
+    pub fn as_scaled_int64(&self, scale: Scale) -> Option<i64> {
+        if self.scale == scale {
+            self.as_int64()
+        } else if self.scale < scale {
+            // larger scale
+            todo!()
+        } else {
+            // smaller scale
+            todo!()
+        }
     }
 
     pub fn to_text(&self, format: Format) -> Option<String> {

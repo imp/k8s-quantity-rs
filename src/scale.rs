@@ -15,7 +15,11 @@ pub enum Scale {
 }
 
 impl Scale {
-    pub(super) fn integer_multiplier(&self, format: Format) -> Option<i64> {
+    pub(super) fn integer_multiplier(self) -> Option<i64> {
+        self.decimal_multiplier()
+    }
+
+    pub(super) fn format_multiplier(self, format: Format) -> Option<i64> {
         match format {
             Format::DecimalExponent => todo!(),
             Format::BinarySI => self.binary_miltiplier(),
@@ -23,7 +27,7 @@ impl Scale {
         }
     }
 
-    fn binary_miltiplier(&self) -> Option<i64> {
+    fn binary_miltiplier(self) -> Option<i64> {
         match self {
             Self::None => Some(1),
             Self::Kilo => Some(1024),
@@ -36,7 +40,7 @@ impl Scale {
         }
     }
 
-    fn decimal_multiplier(&self) -> Option<i64> {
+    fn decimal_multiplier(self) -> Option<i64> {
         match self {
             Self::None => Some(1),
             Self::Kilo => Some(1_000),
@@ -130,7 +134,7 @@ impl str::FromStr for Scale {
     }
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct InvalidScale;
 
 impl fmt::Display for InvalidScale {
